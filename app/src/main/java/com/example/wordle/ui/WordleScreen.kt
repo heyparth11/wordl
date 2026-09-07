@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,7 +46,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.example.wordle.domain.ThemeMode
+import com.example.wordle.ui.components.HintDialog
 import com.example.wordle.ui.components.LoseDialog
+import com.example.wordle.ui.components.SettingsDialog
 import com.example.wordle.ui.components.StatsDialog
 import com.example.wordle.ui.components.WinDialog
 import kotlinx.coroutines.delay
@@ -56,6 +60,8 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun WordleScreen(
     viewModel: WordleViewModel,
+    currentTheme: ThemeMode = ThemeMode.SYSTEM,
+    onThemeSelected: (ThemeMode) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -63,6 +69,8 @@ fun WordleScreen(
     var showMessage by remember { mutableStateOf(false) }
     var showResultDialog by remember { mutableStateOf(false) }
     var showStatsDialog by remember { mutableStateOf(false) }
+    var showSettingsDialog by remember { mutableStateOf(false) }
+    var showHintDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.gameStatus) {
         if (state.gameStatus != GameStatus.PLAYING) {
@@ -105,6 +113,17 @@ fun WordleScreen(
                 actions = {
                     IconButton(
                         onClick = {
+                            showHintDialog = true
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Lightbulb,
+                            contentDescription = "Hints"
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
                             showStatsDialog = true
                         }
                     ) {
@@ -116,7 +135,7 @@ fun WordleScreen(
 
                     IconButton(
                         onClick = {
-                            // TODO: show settings
+                            showSettingsDialog = true
                         }
                     ) {
                         Icon(
@@ -160,11 +179,11 @@ fun WordleScreen(
                         Box(
                             modifier = Modifier
                                 .border(
-                                    width = 2.dp,
-                                    color = Color.Gray,
+                                    width = 1.5.dp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
                                     shape = RoundedCornerShape(8.dp)
                                 )
-                                .background(Color.White, shape = RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
                                 .padding(horizontal = 24.dp, vertical = 18.dp),
                             contentAlignment = Alignment.Center
                         ) {
@@ -177,7 +196,7 @@ fun WordleScreen(
                                     text = message,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 18.sp,
-                                    color = Color.Black
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         }
@@ -211,6 +230,29 @@ fun WordleScreen(
                     StatsDialog(
                         stats = state.stats,
                         onDismiss = { showStatsDialog = false }
+                    )
+                }
+
+                if (showSettingsDialog) {
+                    SettingsDialog(
+                        currentTheme = currentTheme,
+                        onThemeSelected = onThemeSelected,
+                        onDismiss = { showSettingsDialog = false }
+                    )
+                }
+
+                if (showHintDialog) {
+                    HintDialog(
+                        definition = state.definition,
+                        letterHints = state.letterHints,
+                        guesses = state.guesses,
+                        onRevealLetter = {
+                            viewModel.revealLetterHint()
+                        },
+                        onGiveUp = {
+                            viewModel.giveUp()
+                        },
+                        onDismiss = { showHintDialog = false }
                     )
                 }
             }

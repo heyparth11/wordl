@@ -20,10 +20,10 @@ class WordleGame(
         const val MAX_ATTEMPTS = 6
     }
 
-//    var targetWord: String = wordRepository.getRandomWord()
-//        private set
+    var targetWord: String = wordRepository.getRandomWord()
+        private set
 
-    var targetWord: String = "APPLE"
+//    var targetWord: String = "APPLE"
 
     private val guesses = mutableListOf<GuessResult>()
 
@@ -91,6 +91,24 @@ class WordleGame(
         currentGuess = ""
 
         return GuessSubmissionResult.Accepted
+    }
+
+    fun forfeit() {
+        if (status == GameStatus.PLAYING) {
+            status = GameStatus.LOST
+        }
+    }
+
+    fun getUnrevealedIndices(alreadyRevealedHints: Set<Int> = emptySet()): List<Int> {
+        val correctlyGuessed = mutableSetOf<Int>()
+        for (guess in guesses) {
+            for (i in guess.letterStates.indices) {
+                if (guess.letterStates[i] == LetterState.CORRECT) {
+                    correctlyGuessed.add(i)
+                }
+            }
+        }
+        return (0 until WORD_LENGTH).filter { it !in correctlyGuessed && it !in alreadyRevealedHints }
     }
 
     fun restart() {

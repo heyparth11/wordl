@@ -9,5 +9,6 @@ data class GameState(
     val keyboardState: Map<Char, LetterState> = emptyMap(),
     val message: String? = null,
     val shakeTrigger: Int = 0,
-    val stats: UserStats = UserStats()
+    val stats: UserStats = UserStats(),
+    val letterHints: Map<Int, Char> = emptyMap()
 )

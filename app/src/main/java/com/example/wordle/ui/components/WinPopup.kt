@@ -39,7 +39,7 @@ fun WinDialog(
                 .padding(horizontal = 24.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.background
+                containerColor = MaterialTheme.colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 8.dp
@@ -62,7 +62,8 @@ fun WinDialog(
                 Text(
                     text = "You Got It!",
                     fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -71,7 +72,8 @@ fun WinDialog(
                     text = word.uppercase(),
                     fontSize = 32.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    letterSpacing = 4.sp
+                    letterSpacing = 4.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -139,7 +141,7 @@ fun LoseDialog(
                 .padding(horizontal = 24.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.background
+                containerColor = MaterialTheme.colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 8.dp
@@ -163,7 +165,7 @@ fun LoseDialog(
                     text = "Nice Try!",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -181,7 +183,7 @@ fun LoseDialog(
                     fontSize = 32.sp,
                     fontWeight = FontWeight.ExtraBold,
                     letterSpacing = 4.sp,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

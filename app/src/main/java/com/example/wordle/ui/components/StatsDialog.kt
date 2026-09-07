@@ -48,7 +48,7 @@ fun StatsDialog(
                 .padding(horizontal = 16.dp),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.background
+                containerColor = MaterialTheme.colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 10.dp
@@ -72,7 +72,7 @@ fun StatsDialog(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.ExtraBold,
                         letterSpacing = 1.5.sp,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     IconButton(
                         onClick = onDismiss,
@@ -132,7 +132,7 @@ fun StatsDialog(
                             text = "🎯 Best Try Guess: ",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = stats.bestTryDisplay,
@@ -162,6 +162,7 @@ fun StatsDialog(
 
                 // Distribution Chart Bars
                 val maxDistribution = stats.guessDistribution.values.maxOrNull()?.coerceAtLeast(1) ?: 1
+                val customColors = com.example.wordle.ui.theme.LocalWordleColors.current
 
                 for (attempt in 1..6) {
                     val count = stats.guessDistribution[attempt] ?: 0
@@ -177,7 +178,7 @@ fun StatsDialog(
                             text = "$attempt",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.width(16.dp)
                         )
 
@@ -193,7 +194,7 @@ fun StatsDialog(
                                     .fillMaxWidth(fraction)
                                     .height(22.dp)
                                     .background(
-                                        color = if (count > 0) primary else absent.copy(alpha = 0.5f),
+                                        color = if (count > 0) primary else customColors.absent.copy(alpha = 0.5f),
                                         shape = RoundedCornerShape(4.dp)
                                     )
                                     .padding(horizontal = 8.dp),
@@ -247,7 +248,7 @@ private fun StatMetricItem(
             text = value,
             fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(2.dp))
         Text(

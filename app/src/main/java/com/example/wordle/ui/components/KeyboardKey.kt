@@ -16,6 +16,7 @@ import com.example.wordle.ui.theme.absent
 import com.example.wordle.ui.theme.primary
 import com.example.wordle.ui.theme.secondary
 import com.example.wordle.ui.theme.unknown
+import com.example.wordle.ui.theme.LocalWordleColors
 
 @Composable
 fun KeyboardKey(
@@ -25,19 +26,28 @@ fun KeyboardKey(
     state: LetterState = LetterState.UNKNOWN,
     onClick: () -> Unit,
 ) {
+    val customColors = LocalWordleColors.current
 
     val backgroundColor = when (state) {
         LetterState.UNKNOWN ->
-            unknown
+            customColors.unknown
 
         LetterState.ABSENT ->
-            absent
+            customColors.absent
 
         LetterState.PRESENT ->
-            secondary
+            customColors.secondary
 
         LetterState.CORRECT ->
-            primary
+            customColors.primary
+    }
+
+    val textColor = when (state) {
+        LetterState.UNKNOWN ->
+            if (customColors.isDark) Color.White else Color.Black
+
+        else ->
+            Color.White
     }
 
     Button(
@@ -47,16 +57,15 @@ fun KeyboardKey(
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
-            contentColor = Color.White
+            contentColor = textColor
         ),
         shape = RoundedCornerShape(4.dp)
-
     ) {
         Text(
             text = text ?: letter?.toString() ?: "",
-            fontSize = if (text != null) 14.sp else 14.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = textColor
         )
     }
 }

@@ -98,13 +98,54 @@ class WordleViewModel(application: Application) : AndroidViewModel(application) 
         updateState(message = message, shakeTrigger = shakeTrigger)
     }
 
+    fun revealLetterHint(): Pair<Int, Char>? {
+        if (game.status != GameStatus.PLAYING) return null
+
+        val currentHints = _state.value.letterHints
+        val unrevealed = game.getUnrevealedIndices(currentHints.keys)
+        if (unrevealed.isEmpty()) {
+            updateState(message = "All letters already discovered!")
+            return null
+        }
+
+        val randomIndex = unrevealed.random()
+        val letter = game.targetWord[randomIndex]
+        val updatedHints = currentHints + (randomIndex to letter)
+
+        _state.update {
+            it.copy(
+                letterHints = updatedHints,
+                message = "Hint: Letter ${randomIndex + 1} is '$letter'"
+            )
+        }
+        return randomIndex to letter
+    }
+
+    fun giveUp() {
+        if (game.status == GameStatus.PLAYING) {
+            game.forfeit()
+            if (!hasRecordedStatsForCurrentGame) {
+                hasRecordedStatsForCurrentGame = true
+                val updatedStats = statsRepository.recordGameResult(won = false, attempts = game.guessResults.size)
+                _state.update { it.copy(stats = updatedStats) }
+            }
+            updateState(message = "Game forfeited! The word was ${game.targetWord}")
+        }
+    }
+
     fun restart() {
 
         game.restart()
         hasRecordedStatsForCurrentGame = false
 
         updateState()
-        _state.update { it.copy(definition = null, stats = statsRepository.getStats()) }
+        _state.update {
+            it.copy(
+                definition = null,
+                letterHints = emptyMap(),
+                stats = statsRepository.getStats()
+            )
+        }
         fetchDefinition(game.targetWord)
     }
 

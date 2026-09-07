@@ -39,13 +39,24 @@ import com.example.wordle.ui.theme.absent
 import com.example.wordle.ui.theme.primary
 import com.example.wordle.ui.theme.secondary
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.example.wordle.domain.ThemeMode
+import com.example.wordle.ui.components.SettingsDialog
+
 @Composable
 fun MainMenu(
+    currentTheme: ThemeMode = ThemeMode.SYSTEM,
+    onThemeSelected: (ThemeMode) -> Unit = {},
     onPlayClick: () -> Unit = {},
     onPlayWithFriendClick: () -> Unit = {},
-    onSettingsClick: () -> Unit = {},
+    onSettingsClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
+    var showSettingsDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background
@@ -172,7 +183,13 @@ fun MainMenu(
 
             // Option 3: Settings
             OutlinedButton(
-                onClick = onSettingsClick,
+                onClick = {
+                    if (onSettingsClick != null) {
+                        onSettingsClick()
+                    } else {
+                        showSettingsDialog = true
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(54.dp),
@@ -191,6 +208,14 @@ fun MainMenu(
                     text = "Settings",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            if (showSettingsDialog) {
+                SettingsDialog(
+                    currentTheme = currentTheme,
+                    onThemeSelected = onThemeSelected,
+                    onDismiss = { showSettingsDialog = false }
                 )
             }
         }

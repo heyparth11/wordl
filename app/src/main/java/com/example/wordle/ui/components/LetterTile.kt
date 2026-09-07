@@ -30,6 +30,8 @@ import com.example.wordle.ui.theme.curBorderColor
 import com.example.wordle.ui.theme.primary
 import com.example.wordle.ui.theme.secondary
 
+import com.example.wordle.ui.theme.LocalWordleColors
+
 @Composable
 fun LetterTile(
     letter: Char,
@@ -37,6 +39,8 @@ fun LetterTile(
     modifier: Modifier = Modifier,
     animationDelayMs: Int = 0
 ) {
+    val customColors = LocalWordleColors.current
+
     // Pop animation when entering a letter
     var scale by remember { mutableFloatStateOf(1f) }
 
@@ -87,18 +91,18 @@ fun LetterTile(
             MaterialTheme.colorScheme.surface
 
         LetterState.ABSENT ->
-            absent
+            customColors.absent
 
         LetterState.PRESENT ->
-            secondary
+            customColors.secondary
 
         LetterState.CORRECT ->
-            primary
+            customColors.primary
     }
 
     val tileBorderColor = when (displayedState) {
         LetterState.UNKNOWN ->
-            if (letter != ' ') curBorderColor else borderColor
+            if (letter != ' ') customColors.curBorderColor else customColors.borderColor
 
         else ->
             backgroundColor
