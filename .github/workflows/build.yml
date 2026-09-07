@@ -29,6 +29,11 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease
 
+      - name: Find APK
+        run: |
+          echo "APK files:"
+          find . -type f -name "*.apk" -print
+
       - name: Generate Tag
         id: tag
         run: |
@@ -49,4 +54,5 @@ jobs:
           name: Release ${{ steps.tag.outputs.tag }}
           prerelease: true
           generate_release_notes: true
-          files: app/build/outputs/apk/release/app-release.apk
+          files: |
+            **/build/outputs/apk/release/*.apk
